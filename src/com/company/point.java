@@ -2,7 +2,12 @@ package com.company;
 
 public class point {
 
-    double[] values;
+    private  double[] values;
+
+    public double[] getValues() {
+        return values;
+    }
+
     public point(double[] vals)
     {
         values = vals;
