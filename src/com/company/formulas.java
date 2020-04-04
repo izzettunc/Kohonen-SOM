@@ -2,6 +2,13 @@ package com.company;
 
 public class formulas {
 
+    public static int[] point_to_index_converter(int point,int max_j,int max_i)
+    {
+        int point_j = point%max_j;
+        int point_i = (point-point_j)/max_i;
+        return  new int[]{point_i,point_j};
+    }
+
     public static double euclidian_distance(double[] x_vector,double[] y_vector)
     {
         double sum=0;

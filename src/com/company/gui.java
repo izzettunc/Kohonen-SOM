@@ -16,12 +16,21 @@ public class gui {
     public gui()
     {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        windowHeight=(int)screenSize.getHeight()-100;
-        windowWidth=(int)screenSize.getHeight();
         window = new JFrame("Kohonen SOM");
-        window.setSize(windowWidth,windowHeight);
-        window.setLocationRelativeTo(null);
+        window.setPreferredSize(new Dimension(614,637));
+        //window.setLocationRelativeTo(null);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setVisible(true);
+        window.setResizable(false);
+        window.pack();
+    }
+
+    public void plotUMatrix(double[][] zValues,color_gradients colormap)
+    {
+        hexagonal_grid grid = new hexagonal_grid(zValues,colormap);
+        //grid.setBackground(Color.lightGray);
+        window.add(grid);
+
     }
 
     public void plotHeatMap(double[][] zValues,int min,int max)

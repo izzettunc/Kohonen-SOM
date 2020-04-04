@@ -100,6 +100,110 @@ public class som {
         }
     }
 
+
+    public double[][] get_u_matrix()
+    {
+        int n=x+(x-1),m=y+(y-1);
+        double[][] u_matrix = new double[n][m];
+        int r_i=0,r_j=0;
+        boolean flag=true;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if(j%2==1) r_j++;
+                if(i%2==0 && j%2==0)
+                {}
+                else if(i%2==0 && j%2!=0)
+                {
+                    int[] first_neuron=formulas.point_to_index_converter(r_i*y+r_j,y,x);
+                    int[] second_neuron =formulas.point_to_index_converter(r_i*y+r_j-1,y,x);
+                    u_matrix[i][j]=formulas.euclidian_distance(neurons[first_neuron[0]][first_neuron[1]].weights,neurons[second_neuron[0]][second_neuron[1]].weights);
+                }
+                else if(i%2!=0 && j%2==0)
+                {
+                    int[] first_neuron=formulas.point_to_index_converter((r_i+1)*y+r_j,y,x);
+                    int[] second_neuron =formulas.point_to_index_converter(r_i*y+r_j,y,x);
+                    u_matrix[i][j]=formulas.euclidian_distance(neurons[first_neuron[0]][first_neuron[1]].weights,neurons[second_neuron[0]][second_neuron[1]].weights);
+                }
+                else
+                {
+                    if(flag)
+                    {
+                        int[] first_neuron=formulas.point_to_index_converter((r_i+1)*y+(r_j-1),y,x);
+                        int[] second_neuron =formulas.point_to_index_converter((r_i*y)+r_j,y,x);
+                        u_matrix[i][j]=formulas.euclidian_distance(neurons[first_neuron[0]][first_neuron[1]].weights,neurons[second_neuron[0]][second_neuron[1]].weights);
+                        flag=false;
+                    }
+                    else
+                    {
+                        int[] first_neuron=formulas.point_to_index_converter((r_i+1)*y+(r_j),y,x);
+                        int[] second_neuron =formulas.point_to_index_converter((r_i*y)+r_j-1,y,x);
+                        u_matrix[i][j]=formulas.euclidian_distance(neurons[first_neuron[0]][first_neuron[1]].weights,neurons[second_neuron[0]][second_neuron[1]].weights);
+                        flag=true;
+                    }
+                }
+            }
+            r_j=0;
+            if(i%2==1) r_i++;
+        }
+        r_i=0;
+        r_j=0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if(j%2==1) r_j++;
+                if(i%2==0 && j%2==0)
+                {
+                    int c=0;
+                    if(r_j%2==1)//upper
+                    {
+                        if(i-1>=0)
+                        {
+                            u_matrix[i][j]+=u_matrix[i-1][j];
+                            c++;
+                        }
+                        if(i+1<x)
+                        {
+                            u_matrix[i][j]+=u_matrix[i+1][j];
+                            c++;
+                            if(j-1>=0)
+                            {
+                                u_matrix[i][j]+=u_matrix[i+1][j-1];
+                                c++;
+                            }
+                            if(j+1<y)
+                                {u_matrix[i][j]+=u_matrix[i+1][j+1];c++;}
+                        }
+                        if(j-1>=0)
+                            {u_matrix[i][j]+=u_matrix[i][j-1];c++;}
+                        if(j+1<y)
+                            {u_matrix[i][j]+=u_matrix[i][j+1];c++;}
+                        u_matrix[i][j]/=c;
+                    }
+                    else//lower
+                    {
+                        if(i+1<x)
+                            {u_matrix[i][j]+=u_matrix[i+1][j];c++;}
+                        if(i-1>=0)
+                        {
+                            {u_matrix[i][j]+=u_matrix[i-1][j];c++;}
+                            if(j-1>=0)
+                                {u_matrix[i][j]+=u_matrix[i-1][j-1];c++;}
+                            if(j+1<y)
+                                {u_matrix[i][j]+=u_matrix[i-1][j+1];c++;}
+                        }
+                        if(j-1>=0)
+                            {u_matrix[i][j]+=u_matrix[i][j-1];c++;}
+                        if(j+1<y)
+                            {u_matrix[i][j]+=u_matrix[i][j+1];c++;}
+                        u_matrix[i][j]/=c;
+                    }
+                }
+            }
+            r_j=0;
+            if(i%2==1) r_i++;
+        }
+        return u_matrix;
+    }
+
     public void print_results()
     {
         for (int i = 0; i < x; i++) {
