@@ -72,7 +72,7 @@ public class data {
                         types.add(column_type[j]);
                     }
                     for (int j = 0; j < temp; j++) {
-                        types.add(data_types.BOOL);
+                        types.add(data_types.CATEGORICAL);
                         if(contains_label)
                             new_labels.add(labels.get(i)+"_"+j);
                     }
@@ -192,6 +192,19 @@ public class data {
         }
         if(this.row > 0) column=raw_data.get(0).length;
         csvReader.close();
+    }
+
+    public point[] get_data_points()
+    {
+        point[] data_points = new point[processed_data.get(0).size()];
+        for (int i = 0; i < data_points.length; i++) {
+            double[] val = new double[processed_data.size()];
+            for (int j = 0; j < val.length; j++) {
+                val[j]=processed_data.get(j).get(i);
+            }
+            data_points[i] = new point(val);
+        }
+        return  data_points;
     }
 
     public ArrayList<Double> getMaximum() {
