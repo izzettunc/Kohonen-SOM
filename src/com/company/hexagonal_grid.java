@@ -40,9 +40,6 @@ public class hexagonal_grid extends JPanel {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D)g;
 
-        g2d.drawLine(0,300,600,300);
-        g2d.drawLine(300,0,300,600);
-
         int windowWidth=this.getWidth();
         int windowHeight=this.getHeight();
         double radius=0;
@@ -55,6 +52,7 @@ public class hexagonal_grid extends JPanel {
         if(g_j>(g_i+2))
         {
             m=g_j;
+            m++;
             radius = (windowWidth*2.0)/(3*m+1);
         }
         else
@@ -74,6 +72,9 @@ public class hexagonal_grid extends JPanel {
         for (int i = 0; i < x; i++) {
             for (int j = 0; j < y; j++) {
                 double ratio=(zValues[i][j]-min)/(max-min);
+                //1 means longer distance
+                //0 means closer so I need to change ratio
+                ratio=1-ratio;
                 switch (cmap)
                 {
                     case GRAY_SCALE:
@@ -83,10 +84,36 @@ public class hexagonal_grid extends JPanel {
                     case HOT_SCALE:
                         int green=(int)Math.ceil((1-ratio)*255);
                         g.setColor(new Color(255,green,0));
+                        break;
                     case COLD_SCALE:
                         int gr=(int)Math.ceil((1-ratio)*255);
                         g.setColor(new Color(gr,gr,255));
+                        break;
                     case FIVE_COLOR:
+                        if(ratio<0.25)
+                        {
+                            double innerRatio= ratio/0.25;
+                            int grn=(int)Math.ceil((innerRatio)*255);
+                            g.setColor(new Color(0,grn,255));
+                        }
+                        else if(ratio>=0.25 && ratio<0.5)
+                        {
+                            double innerRatio= (ratio-0.25)/0.25;
+                            int bl=(int)Math.ceil((1-innerRatio)*255);
+                            g.setColor(new Color(0,255,bl));
+                        }
+                        else if(ratio>=0.5 && ratio<0.75)
+                        {
+                            double innerRatio= (ratio-0.5)/0.25;
+                            int red=(int)Math.ceil((innerRatio)*255);
+                            g.setColor(new Color(red,255,0));
+                        }
+                        else
+                        {
+                            double innerRatio= (ratio-0.75)/0.25;
+                            int grd=(int)Math.ceil((1-innerRatio)*255);
+                            g.setColor(new Color(255,grd,0));
+                        }
                         break;
                 }
                 hexagon new_hexagon = new hexagon(center,(int)Math.ceil(radius));

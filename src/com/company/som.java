@@ -1,5 +1,10 @@
 package com.company;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 public class som {
@@ -14,14 +19,13 @@ public class som {
     private neighbour_func neighbourhood_func;
     private int iteration;
     private int max_iter;
-    private int epoch;
     public double init_rad;
     public int max_hit=Integer.MIN_VALUE;
 
-    public som(int nodes_x,int nodes_y,double learning_rate_start,double learning_rate_end,neighbour_func neigh_func,double init_rad,int iteration,int epoch)
+    public som(int nodes_i,int nodes_j,double learning_rate_start,double learning_rate_end,neighbour_func neigh_func,double init_rad,int iteration)
     {
-        x=nodes_x;
-        y=nodes_y;
+        x=nodes_i;
+        y=nodes_j;
         this.init_rad=(x+y)/2;
         if(init_rad>0) this.init_rad=init_rad;
         this.learning_rate_start =learning_rate_start;
@@ -31,15 +35,6 @@ public class som {
         rand = new Random();
         this.iteration=0;
         max_iter=iteration;
-        this.epoch=epoch;
-    }
-
-
-    public void shufflePoints()
-    {
-        List<point> pointList = Arrays.asList(points);
-        Collections.shuffle(pointList);
-        pointList.toArray(points);
     }
 
     public void initializeNeurons(int feature_count, ArrayList<Double> max_values, ArrayList<Double> min_values, data_types[] col_types)
@@ -89,14 +84,10 @@ public class som {
 
     public void train()
     {
-        //max_iter=points.length;
-        for (int i = 0; i < epoch; i++) {
-            for (iteration = 0; iteration < max_iter; iteration++) {
-                int selected_point=som.rand.nextInt(points.length);
-                //int selected_point=iteration;
-                int[] bmu=find_BMU(selected_point);
-                update_weights(bmu[0],bmu[1],points[selected_point]);
-            }
+        for (iteration = 0; iteration < max_iter; iteration++) {
+            int selected_point=som.rand.nextInt(points.length);
+            int[] bmu=find_BMU(selected_point);
+            update_weights(bmu[0],bmu[1],points[selected_point]);
         }
     }
 
@@ -114,29 +105,29 @@ public class som {
                 {}
                 else if(i%2==0 && j%2!=0)
                 {
-                    int[] first_neuron=formulas.point_to_index_converter(r_i*y+r_j,y,x);
-                    int[] second_neuron =formulas.point_to_index_converter(r_i*y+r_j-1,y,x);
+                    int[] first_neuron=formulas.point_to_index_converter(r_i*y+r_j,y);
+                    int[] second_neuron =formulas.point_to_index_converter(r_i*y+r_j-1,y);
                     u_matrix[i][j]=formulas.euclidian_distance(neurons[first_neuron[0]][first_neuron[1]].weights,neurons[second_neuron[0]][second_neuron[1]].weights);
                 }
                 else if(i%2!=0 && j%2==0)
                 {
-                    int[] first_neuron=formulas.point_to_index_converter((r_i+1)*y+r_j,y,x);
-                    int[] second_neuron =formulas.point_to_index_converter(r_i*y+r_j,y,x);
+                    int[] first_neuron=formulas.point_to_index_converter((r_i+1)*y+r_j,y);
+                    int[] second_neuron =formulas.point_to_index_converter(r_i*y+r_j,y);
                     u_matrix[i][j]=formulas.euclidian_distance(neurons[first_neuron[0]][first_neuron[1]].weights,neurons[second_neuron[0]][second_neuron[1]].weights);
                 }
                 else
                 {
                     if(flag)
                     {
-                        int[] first_neuron=formulas.point_to_index_converter((r_i+1)*y+(r_j-1),y,x);
-                        int[] second_neuron =formulas.point_to_index_converter((r_i*y)+r_j,y,x);
+                        int[] first_neuron=formulas.point_to_index_converter((r_i+1)*y+(r_j-1),y);
+                        int[] second_neuron =formulas.point_to_index_converter((r_i*y)+r_j,y);
                         u_matrix[i][j]=formulas.euclidian_distance(neurons[first_neuron[0]][first_neuron[1]].weights,neurons[second_neuron[0]][second_neuron[1]].weights);
                         flag=false;
                     }
                     else
                     {
-                        int[] first_neuron=formulas.point_to_index_converter((r_i+1)*y+(r_j),y,x);
-                        int[] second_neuron =formulas.point_to_index_converter((r_i*y)+r_j-1,y,x);
+                        int[] first_neuron=formulas.point_to_index_converter((r_i+1)*y+(r_j),y);
+                        int[] second_neuron =formulas.point_to_index_converter((r_i*y)+r_j-1,y);
                         u_matrix[i][j]=formulas.euclidian_distance(neurons[first_neuron[0]][first_neuron[1]].weights,neurons[second_neuron[0]][second_neuron[1]].weights);
                         flag=true;
                     }
@@ -204,16 +195,67 @@ public class som {
         return u_matrix;
     }
 
-    public void print_results()
+    public void print_weights()
     {
-        for (int i = 0; i < x; i++) {
-            for (int j = 0; j < y; j++) {
-                System.out.print((int)neurons[i][j].weights[0]+","+(int)neurons[i][j].weights[1]+",");
+        try {
+            FileWriter fw=null;
+            File f = new File("results\\");
+            if(!f.exists())
+                f.mkdir();
+            fw = new FileWriter("results\\weights.csv");
+            fw.write("i,j,");
+            for (int i = 0; i < neurons[0][0].weights.length; i++) {
+                if(i+1<neurons[0][0].weights.length)
+                    fw.write("col"+i+",");
+                else
+                    fw.write("col"+i+"\n");
             }
+            for (int i = 0; i < x; i++) {
+                for (int j = 0; j < y; j++) {
+                    neuron selected = neurons[i][j];
+                    fw.write(i+","+j+",");
+                    for (int k = 0; k < selected.weights.length; k++) {
+                        if(k+1<selected.weights.length)
+                            fw.write(selected.weights[k]+",");
+                        else
+                            fw.write(selected.weights[k]+"\n");
+                    }
+                }
+            }
+            fw.flush();
+            fw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    public double[][] get_results(int col_index)
+    public void print_points_bmu()
+    {
+        try {
+            FileWriter fw=null;
+            File f = new File("results\\");
+            if(!f.exists())
+                f.mkdir();
+            fw = new FileWriter("results\\points_bmu.csv");
+            fw.write("point,neuron_i,neuron_j\n");
+            for (int i = 0; i < points.length; i++) {
+                int[] bmu=find_BMU(i);
+                fw.write(i+","+bmu[0]+","+bmu[1]+"\n");
+            }
+            fw.flush();
+            fw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void print_results()
+    {
+        print_weights();
+        print_points_bmu();
+    }
+
+    public double[][] get_hit_matrix()
     {
         double[][] result = new double[x][y];
         for (int i = 0; i < points.length; i++) {
@@ -222,18 +264,6 @@ public class som {
             if(result[bmu[0]][bmu[1]]>max_hit)
                 max_hit=(int)result[bmu[0]][bmu[1]];
         }
-        /*neuron[] neuronArray = new neuron[x*y];
-        for (int i = 0; i < x; i++) {
-            for (int j = 0; j < y; j++) {
-                neuronArray[i*x+j]=neurons[i][j];
-            }
-        }
-        Arrays.sort(neuronArray,neuron.neuronComparator);
-        for (int i = 0; i < x; i++) {
-            for (int j = 0; j < y; j++) {
-                result[i][j]=neuronArray[i*x+j].weights[col_index];
-            }
-        }*/
         return  result;
     }
 

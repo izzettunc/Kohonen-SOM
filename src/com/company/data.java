@@ -98,8 +98,21 @@ public class data {
         find_max_min_values();
     }
 
+    public void normalize()
+    {
+        for (int i = 0; i < row ; i++) {
+            for (int j = 0; j < column; j++) {
+                double data=processed_data.get(j).get(i);
+                processed_data.get(j).set(i,((data-minimum.get(j))/(maximum.get(j)-minimum.get(j))));
+            }
+        }
+        find_max_min_values();
+    }
+
     private void find_max_min_values()
     {
+        minimum.clear();
+        maximum.clear();
         for (int i = 0; i < column; i++) {
             minimum.add(Collections.min(processed_data.get(i)));
             maximum.add(Collections.max(processed_data.get(i)));

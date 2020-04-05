@@ -2,10 +2,10 @@ package com.company;
 
 public class formulas {
 
-    public static int[] point_to_index_converter(int point,int max_j,int max_i)
+    public static int[] point_to_index_converter(int point,int max_j)
     {
         int point_j = point%max_j;
-        int point_i = (point-point_j)/max_i;
+        int point_i = (point-point_j)/max_j;
         return  new int[]{point_i,point_j};
     }
 

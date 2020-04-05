@@ -10,47 +10,35 @@ import java.text.AttributedCharacterIterator;
 
 public class gui {
 
-    private JFrame window;
-    private int windowWidth;
-    private int windowHeight;
-    public gui()
-    {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        window = new JFrame("Kohonen SOM");
-        window.setPreferredSize(new Dimension(614,637));
-        //window.setLocationRelativeTo(null);
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setVisible(true);
-        window.setResizable(false);
-        window.pack();
-    }
+    private JFrame window_Umatrix;
+    private JFrame window_heat_map;
 
     public void plotUMatrix(double[][] zValues,color_gradients colormap)
     {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        window_Umatrix = new JFrame("Kohonen SOM");
+        window_Umatrix.setPreferredSize(new Dimension(614,637));
+        window_Umatrix.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window_Umatrix.setVisible(true);
+        window_Umatrix.setResizable(false);
+        window_Umatrix.pack();
         hexagonal_grid grid = new hexagonal_grid(zValues,colormap);
         //grid.setBackground(Color.lightGray);
-        window.add(grid);
-
+        grid.setBackground(new Color(0, 55, 41));
+        window_Umatrix.add(grid);
     }
 
     public void plotHeatMap(double[][] zValues,int min,int max)
     {
-        show();
-        HeatChart my_chart = new HeatChart(zValues,min,max);
-        my_chart.setAxisValuesFont(new Font("Verdana", Font.BOLD, 24));
-        my_chart.setCellSize(new Dimension(windowWidth/zValues.length,windowHeight/zValues.length));
-        Graphics g = window.getGraphics();
-        Image heatMap = my_chart.getChartImage().getScaledInstance(windowWidth,windowHeight, Image.SCALE_SMOOTH);
-        g.drawImage(heatMap,0,0,window);
-    }
-
-    public void show()
-    {
-        window.setVisible(true);
-    }
-
-    public void hide()
-    {
-        window.setVisible(false);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        window_heat_map = new JFrame("Kohonen SOM");
+        window_heat_map.setPreferredSize(new Dimension(614,637));
+        window_heat_map.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window_heat_map.setVisible(true);
+        window_heat_map.setResizable(false);
+        window_heat_map.pack();
+        heat_map map = new heat_map(zValues,min,max);
+        map.setBackground(new Color(0, 55, 41));
+        window_heat_map.add(map);
     }
 }
