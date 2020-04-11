@@ -4,6 +4,8 @@ public class formulas {
 
     public static int[] point_to_index_converter(int point,int max_j)
     {
+        //Converts indexing of matrix cell from monotonically
+        //increasing one dimensional indexing to two dimensional indexing
         int point_j = point%max_j;
         int point_i = (point-point_j)/max_j;
         return  new int[]{point_i,point_j};
@@ -20,6 +22,8 @@ public class formulas {
 
     public static double exp_decay(int iteration,int max_iter,double start_val,double ratio)
     {
+        //If ratio is start_val func approximates to 1
+        //If ratio is 10 then func approximates to start_val*10
         return start_val*Math.exp(-iteration/(max_iter/Math.log(ratio)));
     }
 

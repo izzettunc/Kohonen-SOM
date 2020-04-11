@@ -29,6 +29,7 @@ public class hexagonal_grid extends JPanel {
         zValues=zVals;
         max=Double.MIN_VALUE;
         min=0;
+        //Finds max value for min max scaleing in visualization process
         for (int i = 0; i <x ; i++) {
             for (int j = 0; j < y; j++) {
                 if(zVals[i][j]>max) max=zVals[i][j];
@@ -60,10 +61,12 @@ public class hexagonal_grid extends JPanel {
             m=g_i;
             radius = windowHeight/((m+2)*Math.sqrt(3));
         }
-
+        //Finds longer edge of the grid and scales radius to according to it
         double h=(radius*Math.sqrt(3));
+        //Length of the bottom of the triangles in the hexagon divided by 2
         double halfTriangle=(h/2/Math.sqrt(3));
 
+        //Find starting point in order to center the shorter edge
         startPoint_X = (int)Math.ceil(((windowWidth-((3*g_j+1)*(radius/2)))/2)+radius);
         startPoint_Y = (int)Math.ceil((windowHeight-((g_i)*h))/2);
 
@@ -116,8 +119,13 @@ public class hexagonal_grid extends JPanel {
                         }
                         break;
                 }
+
                 hexagon new_hexagon = new hexagon(center,(int)Math.ceil(radius));
+
                 g2d.fillPolygon(new_hexagon.getHexagon());
+
+                //In order to create the unique shape of the grid
+                //This flag basically makes you draw lower for 2 iteration the higher for 2 iteration
                 int flag=j%4;
                 if(flag<2)
                 {
@@ -130,6 +138,7 @@ public class hexagonal_grid extends JPanel {
                     center.x+=Math.ceil(radius+halfTriangle);
                 }
             }
+            //Next line
             center.x=startPoint_X;
             center.y=(int)Math.floor(startPoint_Y+(h*(i+1)));
         }

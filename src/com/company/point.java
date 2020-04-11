@@ -2,6 +2,7 @@ package com.company;
 
 public class point {
 
+    //N dimensional paint representation
     private  double[] values;
 
     public double[] getValues() {

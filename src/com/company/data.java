@@ -44,6 +44,7 @@ public class data {
         int processed_data_index=0;
         int increased_column = column;
         ArrayList<String> new_labels = new ArrayList<String>();
+        //Processes the data according to its type and alters the indexing if a new column added
         for (int i = 0; i < column; i++) {
             switch (column_type[processed_data_index])
             {
@@ -106,6 +107,7 @@ public class data {
                 processed_data.get(j).set(i,((data-minimum.get(j))/(maximum.get(j)-minimum.get(j))));
             }
         }
+        //Because of the values changed finds and re-assignes max and min values
         find_max_min_values();
     }
 
@@ -121,6 +123,7 @@ public class data {
 
     private void process_ordinal_column(int index,int raw_data_index)
     {
+        //Changes values according to look up table
         processed_data.add(new ArrayList<Double>());
         for (int i = 0; i < row; i++) {
             double val=ordinal_lookup_table.get(raw_data_index).get(raw_data.get(i)[raw_data_index]);
@@ -139,8 +142,8 @@ public class data {
                 dummy_var_index++;
             }
         }
-        //number of columns that is going to be added
-        //avoidance dummy variable trap
+        //Number of columns that is going to be added
+        //Avoidance dummy variable trap
         int col_count=notebook.size()-1;
         for (int i = 0; i < col_count; i++)
             processed_data.add(new ArrayList<Double>());

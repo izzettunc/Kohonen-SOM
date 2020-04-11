@@ -19,6 +19,7 @@ public class hexagon{
     private Polygon createHexagon() {
         Polygon polygon = new Polygon();
 
+        //Find each vertex of a hexagon
         for (int i = 0; i < 6; i++) {
             int xval = (int) (center.x + radius
                     * Math.cos(i * 2 * Math.PI / 6D));

@@ -4,7 +4,7 @@ import java.io.Console;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class neuron implements Comparable<neuron>{
+public class neuron{
 
     public som map;
     public double[] weights;
@@ -14,6 +14,7 @@ public class neuron implements Comparable<neuron>{
     {
         weights = new double[attribute_count];
         min_val=min.toArray();
+        //Random initializing
         for (int i = 0; i < attribute_count; i++) {
             switch (column_type[i])
             {
@@ -30,6 +31,7 @@ public class neuron implements Comparable<neuron>{
         }
         boolean flag=false;
         int start_index=0;
+        //Unique initialization of categorical value so the neuron can't be categort 1 and 2 at the same time
         for (int i = 0; i < attribute_count; i++) {
             if (column_type[i]==data_types.CATEGORICAL && !flag)
             {
@@ -61,28 +63,10 @@ public class neuron implements Comparable<neuron>{
             neigh_val=formulas.gaussian_neighbour(iter,map.init_rad,max_iter,distance,map.init_rad);
         else
             neigh_val=formulas.mexican_hat_neighbour(iter,map.init_rad,max_iter,distance,map.init_rad);
+        //Update weights according to formula
         for (int i = 0; i < weights.length ; i++) {
             weights[i]+=((input.getValues()[i]-weights[i])*decayed_lr*neigh_val);
         }
     }
 
-    @Override
-    public int compareTo(neuron o) {
-        double[] min_point = new double[min_val.length];
-        for (int i = 0; i < min_val.length; i++) {
-            min_point[i]=(double)min_val[i];
-        }
-        double other_distance=formulas.euclidian_distance(min_point,o.weights);
-        double this_distance=formulas.euclidian_distance(min_point,this.weights);
-        if(other_distance>this_distance) return -1;
-        else if(other_distance<this_distance) return 1;
-        else return 0;
-    }
-
-    public static Comparator<neuron> neuronComparator = new Comparator<neuron>() {
-        @Override
-        public int compare(neuron o1, neuron o2) {
-            return o2.compareTo(o1);
-        }
-    };
 }

@@ -53,8 +53,8 @@ public class som {
     {
         double min_distance=Double.MAX_VALUE;
         int[] closest_node_index= new int[]{-1,-1};
-        double euc_distance=Double.MAX_VALUE;
-
+        double euc_distance;
+        //Look for each neuron and find closes to you
         for (int i = 0; i < x ; i++) {
             for (int j = 0; j < y; j++) {
 
@@ -70,11 +70,13 @@ public class som {
 
             }
         }
+        //Closest neuron is best matching unit
         return  closest_node_index;
     }
 
     private void update_weights(int bmu_i,int bmu_j,point input)
     {
+        //Update weight of every neuron according to formula
         for (int i = 0; i < x; i++) {
             for (int j = 0; j < y; j++) {
                 neurons[i][j].update(formulas.euclidian_distance(neurons[i][j].weights,neurons[bmu_i][bmu_j].weights),input);
@@ -84,6 +86,7 @@ public class som {
 
     public void train()
     {
+        //Train the map by selecting a random point for each iteration
         for (iteration = 0; iteration < max_iter; iteration++) {
             int selected_point=som.rand.nextInt(points.length);
             int[] bmu=find_BMU(selected_point);
@@ -91,7 +94,8 @@ public class som {
         }
     }
 
-
+    //Creates a matrix for hexagon representation of U matrix
+    //https://stackoverflow.com/questions/13631673/how-do-i-make-a-u-matrix
     public double[][] get_u_matrix()
     {
         int n=x+(x-1),m=y+(y-1);
@@ -102,7 +106,7 @@ public class som {
             for (int j = 0; j < m; j++) {
                 if(j%2==1) r_j++;
                 if(i%2==0 && j%2==0)
-                {}
+                {}//These must be calculated later because these are basically average of other cells
                 else if(i%2==0 && j%2!=0)
                 {
                     int[] first_neuron=formulas.point_to_index_converter(r_i*y+r_j,y);
@@ -255,6 +259,7 @@ public class som {
         print_points_bmu();
     }
 
+    //Counts of how many times each neuron become a bmu
     public double[][] get_hit_matrix()
     {
         double[][] result = new double[x][y];
