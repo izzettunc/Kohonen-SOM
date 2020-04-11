@@ -13,6 +13,8 @@ public class Main {
         //my_data.normalize();
 
         //Initialize SOM
+        //There is two type of neighbourhood function Gaussian and mexican hat
+        //You can change initial radius by changing init_rad to a positive value (-1 is for default assignment which is (x+y)/2)
         som my_som = new som(10, 10, 0.1,0.01,neighbour_func.GAUSSIAN,-1,1000);
         my_som.setPoints(my_data.get_data_points());
         my_som.initializeNeurons(my_data.getColumnCount(), my_data.getMaximum(), my_data.getMinimum(),my_data.column_type);
@@ -25,7 +27,11 @@ public class Main {
         double[][] u_matrix = my_som.get_u_matrix();
         double[][] hit_matrix = my_som.get_hit_matrix();
         gui my_gui = new gui();
+        //I didn't write code of the heatmap myself it is a library called JHeatChart
+        //And this is the link for it
+        //http://www.javaheatmap.com/
         my_gui.plotHeatMap(hit_matrix,0,my_som.max_hit);
+        //There is four types of color gradients which are COLD,HOT,GRAY and FIVE COLOR
         my_gui.plotUMatrix(u_matrix,color_gradients.GRAY_SCALE);
     }
 }
