@@ -27,11 +27,7 @@ public class data {
         labels=new ArrayList<String>();
         raw_data = new ArrayList<String[]>();
         this.contains_label = contains_label;
-        try {
-            read_csv(path);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        read_csv(path);
         maximum = new ArrayList<Double>();
         minimum = new ArrayList<Double>();
         this.column_type=column_type;
@@ -178,13 +174,13 @@ public class data {
         }
     }
 
-    private void read_csv(String path)throws IOException {
+    private void read_csv(String path){
         String row = null;
         BufferedReader csvReader = null;
         try {
             csvReader = new BufferedReader(new FileReader(path));
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            gui.show_error_message(e.getMessage(),"FileNotFoundException");
         }
         while (true) {
             try {
@@ -199,7 +195,7 @@ public class data {
                 }
 
             } catch (IOException e) {
-                e.printStackTrace();
+                gui.show_error_message(e.getMessage(),"IOException");
             }
             if(row == null) break;
             String[] elements = row.split(",");
@@ -207,7 +203,11 @@ public class data {
             this.row++;
         }
         if(this.row > 0) column=raw_data.get(0).length;
-        csvReader.close();
+        try {
+            csvReader.close();
+        } catch (IOException e) {
+            gui.show_error_message(e.getMessage(),"IOException");
+        }
     }
 
     public point[] get_data_points()
@@ -237,5 +237,96 @@ public class data {
 
     public int getColumnCount() {
         return column;
+    }
+
+    public static data_types[] get_dataTypes_from_file(String path)
+    {
+        data_types[] my_data_types;
+        String row = null;
+        BufferedReader csvReader = null;
+        try {
+            csvReader = new BufferedReader(new FileReader(path));
+        } catch (FileNotFoundException e) {
+            gui.show_error_message(e.getMessage(),"FileNotFoundException");
+        }
+        try {
+            row = csvReader.readLine();
+            if(row == null)
+                throw new IOException("File is empty");
+        } catch (IOException e) {
+            gui.show_error_message(e.getMessage(),"IOExcepiton");
+        }
+        String[] elements = row.split(",");
+        my_data_types = new data_types[elements.length];
+        try {
+            for (int i = 0; i < elements.length; i++) {
+                if (elements[i].equals("INTEGER"))
+                    my_data_types[i] = data_types.INTEGER;
+                else if (elements[i].equals("DOUBLE"))
+                    my_data_types[i] = data_types.DOUBLE;
+                else if (elements[i].equals("CATEGORICAL"))
+                    my_data_types[i] = data_types.CATEGORICAL;
+                else if (elements[i].equals("ORDINAL"))
+                    my_data_types[i] = data_types.ORDINAL;
+                else if (elements[i].equals("BOOL"))
+                    my_data_types[i] = data_types.BOOL;
+                else
+                    throw new IOException("Invalid data type : " + elements[i]);
+            }
+        }
+        catch (IOException e)
+        {
+            gui.show_error_message(e.getMessage(),"IOException");
+        }
+        try {
+            csvReader.close();
+        } catch (IOException e) {
+            gui.show_error_message(e.getMessage(),"IOException");
+        }
+        return my_data_types;
+    }
+
+    public static Hashtable<Integer,Hashtable<String,Double>> get_ordinalTable_from_file(String path)
+    {
+        if(path==null) return null;
+        Hashtable<Integer,Hashtable<String,Double>> my_ordinal_table = new Hashtable<>();
+        String row = null;
+        BufferedReader csvReader = null;
+        try {
+            csvReader = new BufferedReader(new FileReader(path));
+        } catch (FileNotFoundException e) {
+            gui.show_error_message(e.getMessage(),"FileNotFoundException");
+        }
+        try {while (true) {
+            try {
+                row = csvReader.readLine();
+            } catch (IOException e) {
+                gui.show_error_message(e.getMessage(),"IOException");
+            }
+                if (row == null) break;
+                Hashtable<String, Double> table = new Hashtable<>();
+                String[] elements = row.split(",");
+                if (elements.length < 3 && elements.length % 2 == 0)
+                    throw new IOException("Ordinal table data structure must be like this:\ncolumn index,string,double,string,double,...,...,string,double");
+                for (int i = 1; i < elements.length; i += 2) {
+                    table.put(elements[i], Double.parseDouble(elements[i + 1]));
+                }
+                my_ordinal_table.put(Integer.parseInt(elements[0]),table);
+            }
+        }
+        catch (IOException e)
+        {
+            gui.show_error_message(e.getMessage(),"Invalid data");
+        }
+        catch (NumberFormatException e)
+        {
+            gui.show_error_message(e.getMessage(),"NumberFormatException");
+        }
+        try {
+            csvReader.close();
+        } catch (IOException e) {
+            gui.show_error_message(e.getMessage(),"IOException");
+        }
+        return my_ordinal_table;
     }
 }
