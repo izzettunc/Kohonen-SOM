@@ -21,6 +21,10 @@
 * [About the Project](#about-the-project)
 * [Getting Started](#getting-started)
   * [Installation](#installation)
+  * [About Input Structure](#about-input-structure)
+    * [Data](#data)
+    * [Data Types](#data-types)
+    * [Ordinal Values Table](#ordinal-values-table)
 * [Usage](#usage)
 * [Roadmap](#roadmap)
 * [License](#license)
@@ -33,7 +37,7 @@
 
 ![Product Name Screen Shot][product-screenshot]
 
-This project made as a class assignment.It's purpose basically parsing the given csv data , preprocessed it and then training the som for clustering it.
+This project made as a class assignment. It's purpose basically parsing the given csv data , preprocessed it and then training the som for clustering it.
 
 **Features:**
 
@@ -57,7 +61,7 @@ To get a local copy up and running follow these simple steps.
 
 1.  Clone the repo
 ```sh
-git clone https://github.com/izzettunc/Kohonen-SOM.git 
+git clone https://github.com/izzettunc/Kohonen-SOM.git
 ```
 2. Open src folder in a Java Editor
 
@@ -65,30 +69,93 @@ git clone https://github.com/izzettunc/Kohonen-SOM.git
 
 #### Important Notice
 
-I used [JHeatChart](http://www.javaheatmap.com) for visualization of hit values. It's basic and easy to use tool.Go check it out :smile:
+I used [JHeatChart](http://www.javaheatmap.com) for visualization of hit values. It's basic and easy to use tool. Go check it out :smile:
 
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Well, there is no UI for now so you have to change the setting in code.But when I add the UI I will update here.
+~~Well, there is no UI for now so you have to change the setting in code. But when I add the UI I will update here.~~
 
-For now there is some screenshots that shows what can you do with this.
+Now we have one.
 
-* You have to give a data type array for preprocessing the data shown with red arrow.( I think there is enough data types for som algorithm such as double,int,ordinal,categorical and bool )
-* If you want to change starting radius shown in blue for decaying neighbourhood func. basically change it to positive value.Any negative value is going to set it to original value which is usually recommend to be (width plus height of the map ) divided by 2
-* And you can change the visualization a bit by changing the color scale shown in green
-![settings][settings-screenshot]
+And it is pretty self explanatory.
 
-And these are example results
+![main_window][main-window-screenshot]
+
+And these are examples of results
 
 ![result][res-screenshot]
 
 ![result2][res2-screenshot]
 
+### About Input Structure
+
+#### Data
+
+Data input is a classic csv file. **Just don't forget to check ```contains label``` box if your data contains labels**
+```
+label,label1,label2
+val,val1,val2
+val3,val4,val5
+```
+
+#### Data Types
+
+This is a special input for data class in order to remove users dependence to code now you need to give each columns data type in a csv file **without any labels**
+
+**Eg:**
+Data file:
+```
+x,y,z,w,q
+1,a,0,low,1.35
+3,b,1,med,1.27
+4,c,0,high,98
+```
+
+**Eg:**
+Data Types File:
+
+```
+INTEGER,CATEGORICAL,BOOL,ORDINAL,DOUBLE
+```
+
+#### ORDINAL VALUES TABLE
+
+As you can guess ordinal values like low, medium, high are categorical values. But unlike the categorical values they have orders like medium is bigger than low and lesser then high. So in this file you have to denote which column is ordinal and what these ordinal values means.
+
+**Structure**
+```
+column index,value,order,value,order,value,order,...,...,...,...,value,order
+```
+
+**Eg:**
+Data file:
+```
+x,w,y,z
+low,0.98,small,severe
+medium,0.21,average,standard
+high,0.1,big,mild
+```
+
+**Eg:**
+Data Types File:
+
+```
+ORDINAL,DOUBLE,ORDINAL,ORDINAL
+```
+
+**Eg:**
+Ordinal Values Table File:
+
+```
+0,low,1,medium,2,high,3
+2,small,1,average,2.5,big,4
+3,mild,1,standad,4,severe,16
+```
 <!-- ROADMAP -->
 ## Roadmap
 
-See the [open issues](https://github.com/izzettunc/newsClassification/issues) for a list of proposed features (and known issues).
+See the [open issues](https://github.com/izzettunc/Kohonen-SOM/issues) for a list of proposed features (and known issues).
 
 <!-- LICENSE -->
 ## License
@@ -106,6 +173,6 @@ Distributed under the MIT License. See `LICENSE` for more information.
 [linkedin-url]: https://www.linkedin.com/in/izzettunc
 [product-screenshot]: data/screenshots/landing.png
 
-[settings-screenshot]: data/screenshots/settings.png
+[main-window-screenshot]: data/screenshots/main_window.png
 [res-screenshot]: data/screenshots/res.png
 [res2-screenshot]: data/screenshots/res2.png
