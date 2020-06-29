@@ -37,7 +37,7 @@
 
 ![Product Name Screen Shot][product-screenshot]
 
-This project made as a class assignment. It's purpose basically parsing the given csv data , preprocessed it and then training the som for clustering it.
+This project made as a class assignment. Its purpose is basically parsing the given csv data , preprocessed it and then training the som for clustering it.
 
 **Features:**
 
